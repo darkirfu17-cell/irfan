@@ -26,6 +26,11 @@
   box-sizing: border-box;
 }
 
+#dhikrPage[hidden],
+#qiblaPage[hidden] {
+  display: none;
+}
+
 body {
   margin: 0;
   background: radial-gradient(ellipse at top, #102c22, #07130f 65%);
@@ -201,6 +206,30 @@ main {
   border-radius: 14px;
 }
 
+.dhikr-card {
+  cursor: pointer;
+  transition: border-color 220ms ease, transform 220ms ease, box-shadow 220ms ease;
+}
+
+.dhikr-card:hover,
+.dhikr-card:focus-visible {
+  border-color: var(--gold);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 20%), 0 0 0 1px rgb(214 181 109 / 20%);
+  transform: translateY(-3px);
+}
+
+.dhikr-card:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+.dhikr-card-hint {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
 .feature-card h2 {
   margin: 0 0 20px;
   color: var(--gold);
@@ -249,111 +278,558 @@ main {
   border-color: #53665b;
 }
 
-.qibla-content {
-  display: grid;
-  grid-template-columns: 150px minmax(0, 1fr);
+.dhikr-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(20px, 5vw, 56px);
+  animation: dhikr-page-enter 420ms ease both;
+}
+
+.dhikr-page-header {
+  display: flex;
   align-items: center;
-  gap: 22px;
+  justify-content: space-between;
+  width: min(100%, 980px);
+  margin: 0 auto;
 }
 
-.compass-dial {
+.dhikr-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 46px;
+}
+
+.dhikr-page-brand {
+  color: var(--gold);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+}
+
+.dhikr-counter-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 0;
+  text-align: center;
+}
+
+.dhikr-page-title {
+  margin: 0 0 10px;
+  color: var(--gold);
+  font-family: "Amiri", serif;
+  font-size: clamp(30px, 5vw, 44px);
+  font-weight: 400;
+}
+
+.dhikr-invocation {
+  margin: 0 0 34px;
+  color: #d7e2da;
+  font-family: "Amiri", serif;
+  font-size: clamp(24px, 4vw, 34px);
+  direction: rtl;
+}
+
+.dhikr-counter-button {
   position: relative;
-  width: 150px;
-  height: 150px;
-  border: 2px solid #365345;
+  display: grid;
+  place-content: center;
+  width: clamp(230px, 58vw, 340px);
+  aspect-ratio: 1;
+  padding: 25px;
+  overflow: hidden;
+  border: 1px solid rgb(239 213 149 / 75%);
   border-radius: 50%;
-  background: radial-gradient(circle, #193b2d 0 3px, #0a1a14 4px 100%);
-  box-shadow: inset 0 0 0 8px #0d211a, 0 0 0 4px rgb(214 181 109 / 10%);
+  background:
+    radial-gradient(circle at 50% 35%, rgb(44 104 76 / 90%), transparent 58%),
+    linear-gradient(145deg, #174638, #0b2118);
+  color: var(--white);
+  box-shadow:
+    0 0 0 9px rgb(214 181 109 / 7%),
+    0 0 0 18px rgb(214 181 109 / 4%),
+    0 20px 70px rgb(0 0 0 / 35%),
+    inset 0 0 35px rgb(214 181 109 / 9%);
+  transition: transform 160ms ease, box-shadow 220ms ease, border-color 220ms ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.compass-cardinal {
+.dhikr-counter-button::before {
   position: absolute;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
+  inset: 12px;
+  border: 1px solid rgb(214 181 109 / 24%);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
 }
 
-.compass-north {
-  top: 9px;
+.dhikr-counter-button:hover {
+  border-color: #f0d99c;
+  box-shadow:
+    0 0 0 10px rgb(214 181 109 / 9%),
+    0 0 0 21px rgb(214 181 109 / 5%),
+    0 24px 80px rgb(0 0 0 / 42%),
+    inset 0 0 40px rgb(214 181 109 / 12%);
+  transform: translateY(-3px);
+}
+
+.dhikr-counter-button:active {
+  transform: scale(0.97);
+}
+
+.dhikr-counter-button:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 8px;
+}
+
+.dhikr-page-count {
+  font-size: clamp(64px, 13vw, 100px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.dhikr-counter-label {
+  margin-top: 12px;
+  color: #d2dfd6;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dhikr-reset-large {
+  min-width: 140px;
+  margin-top: 42px;
+}
+
+.dhikr-save-status {
+  min-height: 1.4em;
+  margin: 15px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+@keyframes dhikr-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.qibla-card {
+  cursor: pointer;
+  transition: border-color 220ms ease, transform 220ms ease, box-shadow 220ms ease;
+}
+
+.qibla-card:hover,
+.qibla-card:focus-visible {
+  border-color: var(--gold);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 20%), 0 0 0 1px rgb(214 181 109 / 20%);
+  transform: translateY(-3px);
+}
+
+.qibla-card:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+.qibla-card-preview {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #d7e2da;
+  line-height: 1.6;
+}
+
+.qibla-card-emblem {
+  display: grid;
+  flex: 0 0 62px;
+  width: 62px;
+  height: 62px;
+  place-items: center;
+  border: 1px solid rgb(214 181 109 / 42%);
+  border-radius: 50%;
+  background: radial-gradient(circle, #1d513c, #0b2118);
+  color: var(--gold);
+  font-size: 30px;
+  box-shadow: 0 0 24px rgb(214 181 109 / 10%);
+}
+
+.qibla-card-hint {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.qibla-page {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: clamp(18px, 4vw, 42px);
+  background:
+    radial-gradient(ellipse at 50% 38%, rgb(21 75 54 / 62%), transparent 48%),
+    radial-gradient(ellipse at top, #102c22, #07130f 72%);
+  animation: dhikr-page-enter 420ms ease both;
+}
+
+.qibla-page::before {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at center, transparent 0 8px, rgb(214 181 109 / 4%) 8.5px 9px, transparent 9.5px),
+    repeating-conic-gradient(from 0deg, rgb(214 181 109 / 3%) 0deg 1deg, transparent 1deg 15deg);
+  background-size: 56px 56px, 100% 100%;
+  content: "";
+  pointer-events: none;
+  opacity: 0.36;
+}
+
+.qibla-page-header,
+.qibla-layout {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 1120px);
+  margin: 0 auto;
+}
+
+.qibla-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.qibla-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.qibla-brand {
+  color: var(--gold);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+}
+
+.qibla-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+  align-items: center;
+  gap: clamp(30px, 6vw, 78px);
+  padding: clamp(34px, 6vh, 68px) 0 22px;
+}
+
+.qibla-main {
+  text-align: center;
+}
+
+.qibla-overline {
+  margin: 0 0 7px;
+  color: var(--gold);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.qibla-page-title {
+  margin: 0;
+  color: #f1e6c8;
+  font-family: "Amiri", serif;
+  font-size: clamp(34px, 5vw, 52px);
+  font-weight: 400;
+}
+
+.qibla-subtitle {
+  max-width: 520px;
+  margin: 4px auto 30px;
+  color: #b7c9bd;
+  line-height: 1.6;
+}
+
+.qibla-compass {
+  position: relative;
+  width: min(76vw, 390px);
+  margin: 0 auto;
+  aspect-ratio: 1;
+  border: 1px solid rgb(214 181 109 / 45%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgb(19 56 41 / 96%) 0 55%, rgb(8 28 20 / 97%) 56% 100%);
+  box-shadow:
+    0 0 0 8px rgb(214 181 109 / 4%),
+    0 0 0 17px rgb(214 181 109 / 3%),
+    0 24px 80px rgb(0 0 0 / 38%),
+    inset 0 0 45px rgb(214 181 109 / 8%);
+}
+
+.qibla-compass::before,
+.qibla-compass::after {
+  position: absolute;
+  inset: 7%;
+  border: 1px solid rgb(214 181 109 / 19%);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.qibla-compass::after {
+  inset: 17%;
+  border-color: rgb(214 181 109 / 10%);
+}
+
+.qibla-compass-rose {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transition: transform 180ms ease-out;
+}
+
+.qibla-compass-rose::before {
+  position: absolute;
+  inset: 9%;
+  border: 1px dashed rgb(214 181 109 / 18%);
+  border-radius: 50%;
+  content: "";
+}
+
+.qibla-compass-rose::after {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgb(226 209 162 / 62%) 0deg 0.5deg, transparent 0.5deg 10deg);
+  -webkit-mask: radial-gradient(circle, transparent 0 69%, #000 69.5% 71%, transparent 71.5%);
+  mask: radial-gradient(circle, transparent 0 69%, #000 69.5% 71%, transparent 71.5%);
+  content: "";
+  pointer-events: none;
+}
+
+.qibla-cardinal {
+  position: absolute;
+  z-index: 1;
+  color: #b6c8bd;
+  font-size: clamp(12px, 2vw, 16px);
+  font-weight: 700;
+  transition: transform 180ms ease-out;
+}
+
+.qibla-north {
+  top: 7%;
   left: 50%;
   color: var(--gold);
   transform: translateX(-50%);
 }
 
-.compass-east {
+.qibla-east {
   top: 50%;
-  right: 10px;
+  right: 7%;
   transform: translateY(-50%);
 }
 
-.compass-south {
-  bottom: 9px;
+.qibla-south {
+  bottom: 7%;
   left: 50%;
   transform: translateX(-50%);
 }
 
-.compass-west {
+.qibla-west {
   top: 50%;
-  left: 10px;
+  left: 7%;
   transform: translateY(-50%);
 }
 
-.qibla-needle {
+.qibla-marker-orbit {
   position: absolute;
-  top: 50%;
+  z-index: 2;
+  inset: 0;
+  border-radius: 50%;
+  transition: transform 180ms ease-out;
+}
+
+.qibla-kaaba-marker {
+  position: absolute;
+  top: 10%;
   left: 50%;
-  width: 5px;
+  display: grid;
+  width: 46px;
   height: 46px;
-  border-radius: 5px;
-  background: var(--gold);
-  box-shadow: 0 0 12px rgb(214 181 109 / 55%);
-  transform: translate(-50%, -100%) rotate(0deg);
-  transform-origin: 50% 100%;
-}
-
-.qibla-needle::before {
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-right: 7px solid transparent;
-  border-bottom: 10px solid var(--gold);
-  border-left: 7px solid transparent;
-  content: "";
+  place-items: center;
+  border: 1px solid rgb(245 220 157 / 75%);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #286a4c, #103322);
+  color: #f5dfa4;
+  font-size: 23px;
+  box-shadow: 0 0 22px rgb(214 181 109 / 35%);
   transform: translateX(-50%);
 }
 
-.qibla-details {
-  min-width: 0;
+.qibla-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  width: 72px;
+  height: 72px;
+  place-items: center;
+  border: 1px solid rgb(214 181 109 / 50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #1e573e, #091c14);
+  color: var(--gold);
+  font-size: 25px;
+  box-shadow: 0 0 30px rgb(0 0 0 / 35%);
+  transform: translate(-50%, -50%);
 }
 
-.qibla-bearing {
-  margin: 0 0 12px;
-  color: var(--white);
-  font-size: 18px;
-  font-weight: 700;
+.qibla-heading-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  padding: 9px 14px;
+  border: 1px solid rgb(214 181 109 / 22%);
+  border-radius: 999px;
+  background: rgb(9 28 20 / 55%);
+  color: #dce5dc;
+  font-size: 13px;
+}
+
+.qibla-heading-chip strong {
+  color: var(--gold);
   font-variant-numeric: tabular-nums;
 }
 
-.qibla-status {
-  min-height: 3.5em;
-  margin: 0 0 16px;
-  color: var(--muted);
-  line-height: 1.6;
+.qibla-info-panel {
+  padding: clamp(22px, 4vw, 32px);
+  border: 1px solid rgb(214 181 109 / 20%);
+  border-radius: 22px;
+  background: linear-gradient(150deg, rgb(16 39 30 / 92%), rgb(9 27 20 / 94%));
+  box-shadow: 0 24px 65px rgb(0 0 0 / 22%), inset 0 1px rgb(255 255 255 / 3%);
+  backdrop-filter: blur(14px);
 }
 
-.qibla-status.error {
-  color: #ff9999;
+.qibla-info-title {
+  margin: 0 0 18px;
+  color: var(--gold);
+  font-family: "Amiri", serif;
+  font-size: 25px;
+  font-weight: 400;
 }
 
-.qibla-button {
-  width: 100%;
+.qibla-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-.qibla-button:disabled {
-  opacity: 0.6;
+.qibla-metric {
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid rgb(214 181 109 / 12%);
+  border-radius: 13px;
+  background: rgb(5 20 14 / 46%);
+}
+
+.qibla-metric-location {
+  grid-column: 1 / -1;
+}
+
+.qibla-metric-label {
+  display: block;
+  margin-bottom: 7px;
+  color: #91aa9a;
+  font-size: 11px;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.qibla-metric-value {
+  color: #f1e6c8;
+  font-size: clamp(18px, 2.5vw, 25px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.qibla-metric-location .qibla-metric-value {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.qibla-control-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.qibla-refresh {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.qibla-refresh:disabled {
+  opacity: 0.65;
   cursor: wait;
+}
+
+.qibla-loading {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin-right: 7px;
+  border: 2px solid rgb(214 181 109 / 30%);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: qibla-spin 800ms linear infinite;
+  vertical-align: -3px;
+}
+
+@keyframes qibla-spin {
+  to { transform: rotate(360deg); }
+}
+
+.qibla-location-status,
+.qibla-compass-status {
+  min-height: 2.8em;
+  margin: 13px 0 0;
+  color: #a9beb0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.qibla-location-status.error,
+.qibla-compass-status.error {
+  color: #ffaaaa;
+}
+
+.qibla-guide {
+  margin-top: 18px;
+  padding: 16px;
+  border-left: 2px solid var(--gold);
+  border-radius: 0 12px 12px 0;
+  background: rgb(214 181 109 / 5%);
+}
+
+.qibla-guide h3 {
+  margin: 0 0 6px;
+  color: var(--gold);
+  font-size: 14px;
+}
+
+.qibla-guide p {
+  margin: 0;
+  color: #b7c9bd;
+  font-size: 13px;
+  line-height: 1.65;
 }
 
 .panel, .reader {
@@ -584,13 +1060,77 @@ footer {
 }
 
 @media(max-width: 420px) {
-  .qibla-content {
-    grid-template-columns: 1fr;
-    justify-items: center;
+  .dhikr-page {
+    padding: 18px;
   }
 
-  .qibla-details {
+  .dhikr-page-brand {
+    font-size: 11px;
+  }
+
+  .qibla-page {
+    padding: 16px;
+  }
+
+  .qibla-brand {
+    font-size: 10px;
+  }
+
+  .qibla-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .qibla-metric-location {
+    grid-column: auto;
+  }
+
+  .qibla-control-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .qibla-refresh {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dhikr-card,
+  .dhikr-counter-button,
+  .qibla-card {
+    transition: none;
+  }
+
+  .dhikr-page,
+  .qibla-page {
+    animation: none;
+  }
+
+  .qibla-compass-rose,
+  .qibla-cardinal,
+  .qibla-marker-orbit {
+    transition: none;
+  }
+
+  .qibla-loading {
+    animation-duration: 2s;
+  }
+}
+
+@media(max-width: 760px) {
+  .qibla-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding-top: 40px;
+  }
+
+  .qibla-compass {
+    width: min(72vw, 350px);
+  }
+
+  .qibla-info-panel {
+    width: min(100%, 560px);
+    margin: 0 auto;
   }
 }
 </style>
@@ -599,6 +1139,7 @@ footer {
 <body>
 <div class="custom-cursor" id="customCursor" aria-hidden="true"></div>
 
+<div id="homeView">
 <header>
   <div class="nav">
     <div class="logo">۞ AL-QURAN</div>
@@ -649,39 +1190,34 @@ footer {
   </div>
 
   <section class="feature-cards" aria-label="Additional features">
-    <article class="feature-card" aria-labelledby="dhikrTitle">
+    <article
+      class="feature-card dhikr-card"
+      id="dhikrCard"
+      aria-labelledby="dhikrTitle"
+      aria-label="Open the Dhikr Counter"
+      role="button"
+      tabindex="0"
+    >
       <h2 id="dhikrTitle">ദിക്റ് കൗണ്ടർ</h2>
       <output class="dhikr-count" id="dhikrCount" aria-live="polite">0</output>
-      <div class="dhikr-actions">
-        <button class="feature-button dhikr-increment" id="dhikrIncrement" type="button">
-          എണ്ണം കൂട്ടുക
-        </button>
-        <button class="feature-button dhikr-reset" id="dhikrReset" type="button">
-          Reset
-        </button>
-      </div>
+      <p class="dhikr-card-hint">Open counter</p>
     </article>
 
-    <article class="feature-card" aria-labelledby="qiblaTitle">
+    <article
+      class="feature-card qibla-card"
+      id="qiblaCard"
+      aria-labelledby="qiblaTitle"
+      aria-label="Open Qibla Finder"
+      role="button"
+      tabindex="0"
+    >
       <h2 id="qiblaTitle">ഖിബ്‌ല ദിശ</h2>
-      <div class="qibla-content">
-        <div class="compass-dial" id="compassDial" role="img" aria-label="Compass indicator; direction not yet available">
-          <span class="compass-cardinal compass-north">N</span>
-          <span class="compass-cardinal compass-east">E</span>
-          <span class="compass-cardinal compass-south">S</span>
-          <span class="compass-cardinal compass-west">W</span>
-          <span class="qibla-needle" id="qiblaNeedle" hidden></span>
-        </div>
-        <div class="qibla-details">
-          <p class="qibla-bearing" id="qiblaBearing">Qibla bearing: --</p>
-          <p class="qibla-status" id="qiblaStatus" aria-live="polite">
-            Tap below to request location and compass access.
-          </p>
-          <p class="qibla-status" id="qiblaLocationStatus" aria-live="polite"></p>
-          <button class="feature-button qibla-button" id="qiblaButton" type="button">
-            Allow location &amp; compass
-          </button>
-        </div>
+      <div class="qibla-card-preview">
+        <span class="qibla-card-emblem" aria-hidden="true">۞</span>
+        <span>
+          Find the direction of the Holy Kaaba from your location.
+          <span class="qibla-card-hint">Open Qibla Finder</span>
+        </span>
       </div>
     </article>
   </section>
@@ -693,6 +1229,106 @@ footer {
   <p>Read the Quran with peace and understanding.</p>
   <p class="developer-credit">Developed by Muhammed Irfan Eranhikkal</p>
 </footer>
+</div>
+
+<section class="dhikr-page" id="dhikrPage" aria-labelledby="dhikrPageTitle" hidden>
+  <div class="dhikr-page-header">
+    <button class="feature-button dhikr-back" id="dhikrBack" type="button">
+      <span aria-hidden="true">←</span> Back
+    </button>
+    <span class="dhikr-page-brand">۞ AL-QURAN</span>
+  </div>
+
+  <div class="dhikr-counter-content">
+    <h1 class="dhikr-page-title" id="dhikrPageTitle">Dhikr Counter</h1>
+    <p class="dhikr-invocation">سُبْحَانَ اللَّهِ</p>
+    <button
+      class="dhikr-counter-button"
+      id="dhikrIncrement"
+      type="button"
+      aria-label="Increase Dhikr count"
+    >
+      <output class="dhikr-page-count" id="dhikrPageCount" aria-live="polite">0</output>
+      <span class="dhikr-counter-label">Tap to count</span>
+    </button>
+    <button class="feature-button dhikr-reset-large" id="dhikrReset" type="button">
+      Reset
+    </button>
+    <p class="dhikr-save-status" id="dhikrSaveStatus" aria-live="polite"></p>
+  </div>
+</section>
+
+<section class="qibla-page" id="qiblaPage" aria-labelledby="qiblaPageTitle" hidden>
+  <div class="qibla-page-header">
+    <button class="feature-button qibla-back" id="qiblaBack" type="button">
+      <span aria-hidden="true">←</span> Back to Home
+    </button>
+    <span class="qibla-brand">۞ AL-QURAN · QIBLA FINDER</span>
+  </div>
+
+  <div class="qibla-layout">
+    <div class="qibla-main">
+      <p class="qibla-overline">A moment of direction</p>
+      <h1 class="qibla-page-title" id="qiblaPageTitle">Find Your Qibla Direction</h1>
+      <p class="qibla-subtitle">Turn with care toward the Holy Kaaba in Makkah.</p>
+
+      <div class="qibla-compass" id="qiblaCompass" role="img" aria-label="Compass waiting for your location">
+        <div class="qibla-compass-rose" id="qiblaCompassRose">
+          <span class="qibla-cardinal qibla-north" id="qiblaNorth">N</span>
+          <span class="qibla-cardinal qibla-east" id="qiblaEast">E</span>
+          <span class="qibla-cardinal qibla-south" id="qiblaSouth">S</span>
+          <span class="qibla-cardinal qibla-west" id="qiblaWest">W</span>
+        </div>
+        <div class="qibla-marker-orbit" id="qiblaMarkerOrbit" hidden>
+          <span class="qibla-kaaba-marker" id="qiblaKaabaMarker" aria-label="Qibla direction">🕋</span>
+        </div>
+        <span class="qibla-center" aria-hidden="true">۞</span>
+      </div>
+
+      <div class="qibla-heading-chip">
+        Live phone heading: <strong id="qiblaHeadingValue">--</strong>
+      </div>
+      <p class="qibla-compass-status" id="qiblaCompassStatus" aria-live="polite">
+        Compass heading will appear only when a supported sensor provides a reading.
+      </p>
+    </div>
+
+    <aside class="qibla-info-panel" aria-label="Qibla details">
+      <h2 class="qibla-info-title">Your direction to Makkah</h2>
+      <div class="qibla-metrics">
+        <div class="qibla-metric">
+          <span class="qibla-metric-label">Calculated Qibla bearing</span>
+          <div class="qibla-metric-value" id="qiblaBearingValue">--</div>
+        </div>
+        <div class="qibla-metric">
+          <span class="qibla-metric-label">Distance to Kaaba</span>
+          <div class="qibla-metric-value" id="qiblaDistanceValue">--</div>
+        </div>
+        <div class="qibla-metric qibla-metric-location">
+          <span class="qibla-metric-label">Your current location</span>
+          <div class="qibla-metric-value" id="qiblaCoordinates">Waiting for GPS location</div>
+        </div>
+      </div>
+
+      <p class="qibla-location-status" id="qiblaLocationStatus" aria-live="polite">
+        Location will be requested when the finder opens.
+      </p>
+      <div class="qibla-control-row">
+        <button class="feature-button qibla-refresh" id="qiblaRefresh" type="button">
+          <span aria-hidden="true">↻</span> Refresh location
+        </button>
+        <button class="feature-button qibla-refresh" id="qiblaCompassEnable" type="button">
+          Enable compass
+        </button>
+      </div>
+
+      <div class="qibla-guide">
+        <h3>Compass calibration</h3>
+        <p>Hold your phone flat and away from metal or magnets. If the heading drifts, move the phone slowly in a figure-eight, then turn until the Kaaba marker reaches the top of the compass. Compass guidance requires a supported device sensor.</p>
+      </div>
+    </aside>
+  </div>
+</section>
 
 <script>
 
@@ -804,39 +1440,152 @@ const list = document.getElementById("surahList");
 const reader = document.getElementById("reader");
 const searchInput = document.getElementById("search");
 
+const DHIKR_STORAGE_KEY = "quranDhikrCount";
 let dhikrCount = 0;
 let qiblaRequestNumber = 0;
+let qiblaSensorRequestNumber = 0;
 let qiblaCompassHandler = null;
 let qiblaCompassTimeout = null;
 let qiblaBearingDegrees = null;
 let compassHeadingDegrees = null;
+let qiblaSensorInitialized = false;
 
 const dhikrCountOutput = document.getElementById("dhikrCount");
-const qiblaButton = document.getElementById("qiblaButton");
-const qiblaBearingOutput = document.getElementById("qiblaBearing");
-const qiblaStatus = document.getElementById("qiblaStatus");
 const qiblaLocationStatus = document.getElementById("qiblaLocationStatus");
-const compassDial = document.getElementById("compassDial");
-const qiblaNeedle = document.getElementById("qiblaNeedle");
+const qiblaCompassStatus = document.getElementById("qiblaCompassStatus");
+const qiblaCompass = document.getElementById("qiblaCompass");
+const qiblaCompassRose = document.getElementById("qiblaCompassRose");
+const qiblaMarkerOrbit = document.getElementById("qiblaMarkerOrbit");
+const qiblaHeadingValue = document.getElementById("qiblaHeadingValue");
+const qiblaBearingValue = document.getElementById("qiblaBearingValue");
+const qiblaDistanceValue = document.getElementById("qiblaDistanceValue");
+const qiblaCoordinates = document.getElementById("qiblaCoordinates");
+const qiblaRefresh = document.getElementById("qiblaRefresh");
+const homeView = document.getElementById("homeView");
+const dhikrPage = document.getElementById("dhikrPage");
+const qiblaPage = document.getElementById("qiblaPage");
+const dhikrPageCount = document.getElementById("dhikrPageCount");
+const dhikrSaveStatus = document.getElementById("dhikrSaveStatus");
+const dhikrCard = document.getElementById("dhikrCard");
+const qiblaCard = document.getElementById("qiblaCard");
+
+function renderDhikrCount() {
+  dhikrCountOutput.textContent = String(dhikrCount);
+  dhikrPageCount.textContent = String(dhikrCount);
+  document.getElementById("dhikrIncrement").setAttribute(
+    "aria-label",
+    `Dhikr count ${dhikrCount}. Tap to increase.`
+  );
+}
+
+function saveDhikrCount() {
+  try {
+    window.localStorage.setItem(DHIKR_STORAGE_KEY, String(dhikrCount));
+    dhikrSaveStatus.textContent = "Count saved on this device.";
+  } catch (error) {
+    console.error("Dhikr Count Storage Error:", error);
+    dhikrSaveStatus.textContent = "Unable to save the count on this device.";
+  }
+}
+
+function showDhikrPage(addHistoryEntry = true) {
+  stopQiblaSensors();
+  qiblaRequestNumber += 1;
+  homeView.hidden = true;
+  qiblaPage.hidden = true;
+  dhikrPage.hidden = false;
+
+  if (addHistoryEntry) {
+    window.history.pushState({ view: "dhikr-counter" }, "", "#dhikr-counter");
+  }
+}
+
+function showQiblaPage(addHistoryEntry = true) {
+  homeView.hidden = true;
+  dhikrPage.hidden = true;
+  qiblaPage.hidden = false;
+
+  if (addHistoryEntry) {
+    window.history.pushState({ view: "qibla-finder" }, "", "#qibla-finder");
+  }
+
+  startQiblaFinder();
+}
+
+function showHomeView() {
+  stopQiblaSensors();
+  qiblaRequestNumber += 1;
+  dhikrPage.hidden = true;
+  qiblaPage.hidden = true;
+  homeView.hidden = false;
+}
+
+function returnToHome(pageHash) {
+  if (window.location.hash === pageHash && window.history.state) {
+    window.history.back();
+  } else {
+    const homeUrl = window.location.pathname + window.location.search;
+    window.history.replaceState(null, "", homeUrl);
+    showHomeView();
+  }
+}
+
+try {
+  const savedDhikrCount = window.localStorage.getItem(DHIKR_STORAGE_KEY);
+  const parsedDhikrCount = Number(savedDhikrCount);
+
+  if (
+    savedDhikrCount !== null &&
+    Number.isSafeInteger(parsedDhikrCount) &&
+    parsedDhikrCount >= 0
+  ) {
+    dhikrCount = parsedDhikrCount;
+  }
+} catch (error) {
+  console.error("Dhikr Count Load Error:", error);
+  dhikrSaveStatus.textContent = "Saved count could not be loaded on this device.";
+}
+
+renderDhikrCount();
 
 document.getElementById("dhikrIncrement").addEventListener("click", () => {
-  dhikrCount += 1;
-  dhikrCountOutput.textContent = String(dhikrCount);
+  if (dhikrCount < Number.MAX_SAFE_INTEGER) {
+    dhikrCount += 1;
+    renderDhikrCount();
+    saveDhikrCount();
+  }
 });
 
 document.getElementById("dhikrReset").addEventListener("click", () => {
   dhikrCount = 0;
-  dhikrCountOutput.textContent = "0";
+  renderDhikrCount();
+  saveDhikrCount();
 });
 
-function setQiblaStatus(message, isError = false) {
-  qiblaStatus.textContent = message;
-  qiblaStatus.classList.toggle("error", isError);
-}
+dhikrCard.addEventListener("click", () => showDhikrPage());
+dhikrCard.addEventListener("keydown", event => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    showDhikrPage();
+  }
+});
 
-function setQiblaLocationStatus(message, isError = false) {
-  qiblaLocationStatus.textContent = message;
-  qiblaLocationStatus.classList.toggle("error", isError);
+document.getElementById("dhikrBack").addEventListener("click", () => {
+  returnToHome("#dhikr-counter");
+});
+
+window.addEventListener("popstate", () => {
+  if (window.location.hash === "#dhikr-counter") {
+    showDhikrPage(false);
+  } else if (window.location.hash === "#qibla-finder") {
+    showQiblaPage(false);
+  } else {
+    showHomeView();
+  }
+});
+
+if (window.location.hash === "#dhikr-counter") {
+  showDhikrPage(false);
 }
 
 function getQiblaBearing(latitude, longitude) {
@@ -851,49 +1600,130 @@ function getQiblaBearing(latitude, longitude) {
   return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
 }
 
+function getDistanceToKaaba(latitude, longitude) {
+  const earthRadiusKm = 6371.0088;
+  const kaabaLatitude = 21.4225 * Math.PI / 180;
+  const kaabaLongitude = 39.8262 * Math.PI / 180;
+  const userLatitude = latitude * Math.PI / 180;
+  const latitudeDifference = kaabaLatitude - userLatitude;
+  const longitudeDifference = kaabaLongitude - longitude * Math.PI / 180;
+  const haversine = Math.sin(latitudeDifference / 2) ** 2 +
+    Math.cos(userLatitude) * Math.cos(kaabaLatitude) *
+    Math.sin(longitudeDifference / 2) ** 2;
+  const boundedHaversine = Math.min(1, Math.max(0, haversine));
+
+  return earthRadiusKm * 2 * Math.atan2(
+    Math.sqrt(boundedHaversine),
+    Math.sqrt(1 - boundedHaversine)
+  );
+}
+
+function setQiblaLocationStatus(message, isError = false, isLoading = false) {
+  qiblaLocationStatus.textContent = "";
+  if (isLoading) {
+    const spinner = document.createElement("span");
+    spinner.className = "qibla-loading";
+    spinner.setAttribute("aria-hidden", "true");
+    qiblaLocationStatus.append(spinner, document.createTextNode(message));
+  } else {
+    qiblaLocationStatus.textContent = message;
+  }
+  qiblaLocationStatus.classList.toggle("error", isError);
+}
+
+function setQiblaCompassStatus(message, isError = false) {
+  qiblaCompassStatus.textContent = message;
+  qiblaCompassStatus.classList.toggle("error", isError);
+}
+
+function updateQiblaMarker() {
+  if (qiblaBearingDegrees === null) {
+    qiblaMarkerOrbit.hidden = true;
+    qiblaCompass.setAttribute("aria-label", "Compass waiting for your location");
+    return;
+  }
+
+  const relativeBearing = (qiblaBearingDegrees -
+    (compassHeadingDegrees === null ? 0 : compassHeadingDegrees) + 360) % 360;
+
+  qiblaMarkerOrbit.hidden = false;
+  qiblaMarkerOrbit.style.transform = `rotate(${relativeBearing}deg)`;
+  document.getElementById("qiblaKaabaMarker").style.transform =
+    `translateX(-50%) rotate(${-relativeBearing}deg)`;
+  qiblaCompass.setAttribute(
+    "aria-label",
+    compassHeadingDegrees === null
+      ? `Calculated Qibla bearing ${Math.round(qiblaBearingDegrees)} degrees clockwise from north. Live compass heading is unavailable.`
+      : `Qibla direction ${Math.round(relativeBearing)} degrees clockwise from the phone's current heading.`
+  );
+}
+
 function updateCompassHeading(heading) {
   if (!Number.isFinite(heading)) return;
 
-  compassHeadingDegrees = heading;
+  compassHeadingDegrees = (heading + 360) % 360;
+  const roundedHeading = Math.round(compassHeadingDegrees) % 360;
+  qiblaHeadingValue.textContent = `${roundedHeading}°`;
+  qiblaCompassRose.style.transform = `rotate(${-compassHeadingDegrees}deg)`;
 
-  if (qiblaBearingDegrees !== null) {
-    qiblaNeedle.hidden = false;
-    compassDial.style.transform = `rotate(${-heading}deg)`;
-    qiblaNeedle.style.transform =
-      `translate(-50%, -100%) rotate(${qiblaBearingDegrees}deg)`;
-    compassDial.setAttribute(
-      "aria-label",
-      `Compass indicator showing Qibla at ${Math.round(qiblaBearingDegrees)} degrees from north`
-    );
-  }
+  [
+    ["qiblaNorth", "translateX(-50%)"],
+    ["qiblaEast", "translateY(-50%)"],
+    ["qiblaSouth", "translateX(-50%)"],
+    ["qiblaWest", "translateY(-50%)"]
+  ].forEach(([id, positionTransform]) => {
+    document.getElementById(id).style.transform =
+      `${positionTransform} rotate(${compassHeadingDegrees}deg)`;
+  });
+
+  updateQiblaMarker();
+  setQiblaCompassStatus("Live compass active. The compass responds to your phone's heading.");
 }
 
 async function requestCompassAccess(requestId) {
   const orientationEvent = window.DeviceOrientationEvent;
 
   if (!orientationEvent) {
-    return "This device or browser does not support a compass sensor.";
+    setQiblaCompassStatus(
+      "A compass sensor is not supported by this browser or device. You can still use the calculated bearing from true north.",
+      true
+    );
+    return;
   }
 
   if (typeof orientationEvent.requestPermission === "function") {
     try {
       const permission = await orientationEvent.requestPermission();
 
+      if (requestId !== qiblaSensorRequestNumber) return;
       if (permission !== "granted") {
-        return "Compass permission was not granted; the arrow cannot be oriented.";
+        setQiblaCompassStatus(
+          "Compass permission was not granted. The calculated Qibla bearing remains available, but live phone orientation is not.",
+          true
+        );
+        return;
       }
     } catch (error) {
       console.error("Compass Permission Error:", error);
-      return "Compass permission could not be obtained; the arrow cannot be oriented.";
+      if (requestId !== qiblaSensorRequestNumber) return;
+      setQiblaCompassStatus(
+        "Compass permission could not be obtained. Use the calculated bearing, or try enabling the compass again.",
+        true
+      );
+      return;
     }
   }
 
-  if (requestId !== qiblaRequestNumber) return "";
+  if (requestId !== qiblaSensorRequestNumber) return;
 
   qiblaCompassHandler = event => {
-    let heading;
+    let heading = null;
 
-    if (Number.isFinite(event.webkitCompassHeading)) {
+    if (
+      Number.isFinite(event.webkitCompassHeading) &&
+      event.webkitCompassHeading >= 0 &&
+      event.webkitCompassHeading < 360
+    ) {
       heading = event.webkitCompassHeading;
     } else if (
       Number.isFinite(event.alpha) &&
@@ -903,10 +1733,7 @@ async function requestCompassAccess(requestId) {
     }
 
     if (Number.isFinite(heading)) {
-      updateCompassHeading((heading + 360) % 360);
-      window.removeEventListener("deviceorientation", qiblaCompassHandler);
-      window.removeEventListener("deviceorientationabsolute", qiblaCompassHandler);
-      qiblaCompassHandler = null;
+      updateCompassHeading(heading);
       window.clearTimeout(qiblaCompassTimeout);
       qiblaCompassTimeout = null;
     }
@@ -914,64 +1741,83 @@ async function requestCompassAccess(requestId) {
 
   window.addEventListener("deviceorientation", qiblaCompassHandler);
   window.addEventListener("deviceorientationabsolute", qiblaCompassHandler);
+  setQiblaCompassStatus("Waiting for a live compass reading from your device...");
 
   qiblaCompassTimeout = window.setTimeout(() => {
-    if (requestId !== qiblaRequestNumber || !qiblaCompassHandler) return;
-
-    window.removeEventListener("deviceorientation", qiblaCompassHandler);
-    window.removeEventListener("deviceorientationabsolute", qiblaCompassHandler);
-    qiblaCompassHandler = null;
+    if (requestId !== qiblaSensorRequestNumber || compassHeadingDegrees !== null) return;
     qiblaCompassTimeout = null;
-    setQiblaStatus(
-      "No usable compass heading was provided by this device or browser. The bearing is shown from north, but the arrow cannot be oriented."
-    );
-  }, 8000);
-
-  return "";
-}
-
-function requestQiblaLocation(requestId) {
-  if (!navigator.geolocation) {
-    setQiblaLocationStatus(
-      "Location is not supported by this browser, so the Qibla bearing cannot be calculated.",
+    setQiblaCompassStatus(
+      "No compass reading has arrived. This device may not provide a heading sensor; the marker currently shows the calculated bearing from north.",
       true
     );
+  }, 8000);
+}
+
+function requestQiblaLocation() {
+  const requestId = ++qiblaRequestNumber;
+
+  if (!navigator.geolocation) {
+    setQiblaLocationStatus(
+      "Location is not supported by this browser. Allow location access in a compatible browser to calculate your Qibla bearing.",
+      true
+    );
+    qiblaCoordinates.textContent = "Location unavailable";
+    qiblaBearingValue.textContent = "--";
+    qiblaDistanceValue.textContent = "--";
+    qiblaBearingDegrees = null;
+    updateQiblaMarker();
+    qiblaRefresh.disabled = false;
+    qiblaRefresh.innerHTML = '<span aria-hidden="true">↻</span> Refresh location';
     return;
   }
+
+  qiblaRefresh.disabled = true;
+  qiblaRefresh.innerHTML = '<span class="qibla-loading" aria-hidden="true"></span>Locating...';
+  setQiblaLocationStatus("Requesting a precise GPS location...", false, true);
 
   navigator.geolocation.getCurrentPosition(
     position => {
       if (requestId !== qiblaRequestNumber) return;
 
+      const { latitude, longitude } = position.coords;
       qiblaBearingDegrees = getQiblaBearing(
-        position.coords.latitude,
-        position.coords.longitude
+        latitude,
+        longitude
       );
-      qiblaBearingOutput.textContent =
-        `Qibla bearing: ${Math.round(qiblaBearingDegrees)}° from north`;
-      setQiblaLocationStatus("Location received.");
-      if (compassHeadingDegrees !== null) {
-        updateCompassHeading(compassHeadingDegrees);
-      }
+      const distance = getDistanceToKaaba(latitude, longitude);
+      qiblaBearingValue.textContent = `${Math.round(qiblaBearingDegrees)}°`;
+      qiblaDistanceValue.textContent = `${distance.toFixed(1)} km`;
+      qiblaCoordinates.textContent =
+        `${latitude.toFixed(4)}°, ${longitude.toFixed(4)}°`;
+      setQiblaLocationStatus("GPS location updated successfully.");
+      updateQiblaMarker();
+      qiblaRefresh.disabled = false;
+      qiblaRefresh.innerHTML = '<span aria-hidden="true">↻</span> Refresh location';
     },
     error => {
       if (requestId !== qiblaRequestNumber) return;
 
       console.error("Qibla Location Error:", error);
       const message = error.code === error.PERMISSION_DENIED
-        ? "Location permission was not granted; the Qibla bearing cannot be calculated."
+        ? "Location permission was denied. Allow location access in your browser settings, then refresh."
         : error.code === error.POSITION_UNAVAILABLE
-          ? "Your location is unavailable, so the Qibla bearing cannot be calculated."
-          : "Location could not be obtained. Please try again.";
+          ? "GPS could not determine your location. Move to an open area and try again."
+          : "The location request timed out. Check GPS availability and try again.";
       setQiblaLocationStatus(message, true);
+      qiblaCoordinates.textContent = "Location unavailable";
+      qiblaBearingValue.textContent = "--";
+      qiblaDistanceValue.textContent = "--";
+      qiblaBearingDegrees = null;
+      updateQiblaMarker();
+      qiblaRefresh.disabled = false;
+      qiblaRefresh.innerHTML = '<span aria-hidden="true">↻</span> Refresh location';
     },
-    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
   );
 }
 
-qiblaButton.addEventListener("click", () => {
-  const requestId = ++qiblaRequestNumber;
-
+function stopQiblaSensors() {
+  qiblaSensorRequestNumber += 1;
   if (qiblaCompassHandler) {
     window.removeEventListener("deviceorientation", qiblaCompassHandler);
     window.removeEventListener("deviceorientationabsolute", qiblaCompassHandler);
@@ -979,39 +1825,68 @@ qiblaButton.addEventListener("click", () => {
   }
   window.clearTimeout(qiblaCompassTimeout);
   qiblaCompassTimeout = null;
-  qiblaBearingDegrees = null;
+  qiblaSensorInitialized = false;
+}
+
+function resetCompassHeading() {
   compassHeadingDegrees = null;
-  qiblaNeedle.hidden = true;
-  compassDial.style.transform = "";
-  compassDial.setAttribute(
-    "aria-label",
-    "Compass indicator; direction not yet available"
-  );
-  qiblaBearingOutput.textContent = "Qibla bearing: --";
-  setQiblaLocationStatus("Waiting for location permission...");
-  qiblaButton.disabled = true;
-  qiblaButton.textContent = "Requesting access...";
-  setQiblaStatus("Approve the browser's location and compass requests to find the direction.");
+  qiblaHeadingValue.textContent = "--";
+  qiblaCompassRose.style.transform = "";
+  ["qiblaNorth", "qiblaEast", "qiblaSouth", "qiblaWest"].forEach(id => {
+    document.getElementById(id).style.transform = "";
+  });
+  updateQiblaMarker();
+}
 
-  const compassAccess = requestCompassAccess(requestId);
-  requestQiblaLocation(requestId);
+function startQiblaFinder() {
+  if (qiblaSensorInitialized) return;
 
-  compassAccess.then(message => {
-    if (requestId !== qiblaRequestNumber || !message) return;
+  qiblaSensorInitialized = true;
+  qiblaBearingDegrees = null;
+  qiblaBearingValue.textContent = "--";
+  qiblaDistanceValue.textContent = "--";
+  qiblaCoordinates.textContent = "Waiting for GPS location";
+  resetCompassHeading();
 
-    setQiblaStatus(message);
-  }).catch(error => {
+  const requestId = ++qiblaSensorRequestNumber;
+  requestCompassAccess(requestId).catch(error => {
     console.error("Compass Setup Error:", error);
-    if (requestId === qiblaRequestNumber) {
-      setQiblaStatus("Compass access failed; the arrow cannot be oriented.", true);
+    if (requestId === qiblaSensorRequestNumber) {
+      setQiblaCompassStatus("Compass setup failed. The live heading is unavailable.", true);
     }
-  }).finally(() => {
-    if (requestId === qiblaRequestNumber) {
-      qiblaButton.disabled = false;
-      qiblaButton.textContent = "Allow location & compass";
+  });
+  requestQiblaLocation();
+}
+
+qiblaCard.addEventListener("click", () => showQiblaPage());
+qiblaCard.addEventListener("keydown", event => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    showQiblaPage();
+  }
+});
+
+document.getElementById("qiblaBack").addEventListener("click", () => {
+  returnToHome("#qibla-finder");
+});
+
+qiblaRefresh.addEventListener("click", requestQiblaLocation);
+document.getElementById("qiblaCompassEnable").addEventListener("click", () => {
+  stopQiblaSensors();
+  qiblaSensorInitialized = true;
+  resetCompassHeading();
+  const requestId = ++qiblaSensorRequestNumber;
+  requestCompassAccess(requestId).catch(error => {
+    console.error("Compass Setup Error:", error);
+    if (requestId === qiblaSensorRequestNumber) {
+      setQiblaCompassStatus("Compass setup failed. The live heading is unavailable.", true);
     }
   });
 });
+
+if (window.location.hash === "#qibla-finder") {
+  showQiblaPage(false);
+}
 
 
 // ======================================
